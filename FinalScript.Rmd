@@ -3,51 +3,54 @@ title: "FinalReport-LTER Plant Data"
 author: "Vanessa Robertson-Rojas"
 date: "May 23, 2019"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
 #needed libraries and packages
-#install.packages("dplyr") 
+#install.packages("dplyr")
+#install.packages("reader")
 #install.packages("ggplot2")
 #install.packages("maps")
-#install.packages("mapview")
+
 library(dplyr)
+library(readr)
 library(ggplot2)
 library(knitr)
-library(rworldmap)
 library(maps)
-library(mapproj)
 
+#call data
 LTERPlants<-read.csv("LTERPlants.csv")
 
-```
+#Make a date column
+Date<-paste(LTERPlants$Year, LTERPlants$Month, LTERPlants$Day, sep="")
+LTERPlants$Date <-as.Date(Date, "%Y%m%d")
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE, results = 'hide'}
-## Introduction
-text text text
-
-View(LTERPlants)
-#subset of relevant columns
-
-#summary of subset
-summary(LTERPlants)
-
-#MAKE TABLE HERE, USE "Kable""
-
-names(LTERPlants)
-#columns of note:Latitude, Longitude, Species_Code, Shoot_Height, Flowering_Status, Plant_Biomass
-df <- LTERPlants[ -c(5,7:9,) ]
+#Keep relevant columns 
+LTERPlants<-LTERPlants %>% select(Date, Site, Plot, Latitude, Longitude, Species_Code, Plant_Biomass, Shoot_Height)
 
 ```
+#Intro
+####This data was collected in blank town, Georgia, US at the blank LTER site. Plant species and growth metrics were measured during the spring of 2000 across 8 plots. 
+
+```{r intro}
 
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE, results = 'hide'}
-## Methods: text, figures/tables, text
+#Make a table of avergages and standard deviation 
+LTERSummary <- LTERPlants %>% group_by(Species_Code) %>% summarize(Biomass_Mean = mean(Plant_Biomass, na.rm=T), Biomass_StdDev = sd(Plant_Biomass, na.rm=T), ShootHeight_Mean = mean(Shoot_Height, na.rm=T), ShootHeight_StdDev = sd(Shoot_Height, na.rm=T))
 
+kable(LTERSummary, align='c',digits=2,caption="Table 1. Averages and Standard Deviations of Plant Biomass and Shoot Height.")
+
+```
+
+#Methods
+###Site Description
+####text text text
+#
+```{r, fig.cap= 'Figure 1. Shows a map of the study area in Georgia, USA.'}
 
 #ggplot map of georgia
 #make lat and long objects to use for plot
@@ -57,35 +60,22 @@ plot_lon <--81.42254
 georgiamap <- ggplot() + borders("state", region="Georgia") + coord_map("gilbert") + theme_grey() + geom_point(aes(x=plot_lon, y=plot_lat))
 georgiamap
 
-#ggplot map thats zoomed in 
-plot_lat <-31.53863
-plot_lon <--81.42254
-georgiamap <- ggplot() + borders("state", region="Georgia") + coord_map("gilbert", xlim=c(-84, -81), ylim=c(31, 33 )) + theme_void() + geom_point(aes(x=plot_lon, y=plot_lat))
-georgiamap
+
+```
+###Data Collection
+####text text text
+#
+#Results
+####text text text
+```{r, fig.cap= 'Figure 2. Shows Shoot Height across the 8 different sample plots.'}
+
+SHplot <- ggplot(LTERPlants, aes(group=Site, x=Plot, y=Shoot_Height)) + geom_boxplot() + ggtitle("Boxplot of Shoot Height by Plot #") + theme_bw() + scale_x_discrete(name = "Unique Monitoring Plots") + scale_y_continuous(name = "Shoot Height (cm)")
+SHplot
+
+#Shoot Height (cm) 
+#Unique Monitoring Plots (1-8)
 
 
-map("county", "Georgia", xlim=c(-84, -81), ylim=c(31, 33))
-points(plot_lon, plot_lat, col="blue", pch=17)
 ```
 
-```{r, echo = FALSE, warning = FALSE, message = FALSE, results = 'hide'}## Results
-text text text
-```
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-kable(summary(cars))
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
