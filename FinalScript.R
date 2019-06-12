@@ -7,7 +7,6 @@ library(knitr)
 getwd()
 LTERPlants<-read.csv("LTERPlants.csv")
 View(LTERPlants)
-summary(LTERPlants)
 
 names(LTERPlants)
 #columns of note:Latitude, Longitude, Species_Code, Shoot_Height, Flowering_Status, Plant_Biomass
@@ -51,11 +50,3 @@ points(plot_lon, plot_lat, col="red")
 map("county", "Georgia", xlim=c(-84, -81), ylim=c(31, 33))
 points(plot_lon, plot_lat, col="blue", pch=17)
 
-#leaflet map
-
-m<- leaflet(quakes) %>% addTiles() %>% addHeatmap(lng = ~long, lat  = ~lat, radius=8)
-
-webshot::install_phantomjs()
-mapshot(m, file = "test.png")
-
-m %>% addCircleMarkers(lng = LTERPlants$lon, lat = LTERPlants$lat)

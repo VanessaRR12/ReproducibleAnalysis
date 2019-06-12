@@ -34,21 +34,20 @@ LTERPlants<-LTERPlants %>% select(Date, Site, Plot, Latitude, Longitude, Species
 
 ```
 #Intro
-####This data was collected in blank town, Georgia, US at the blank LTER site. Plant species and growth metrics were measured during the spring of 2000 across 8 plots. 
+####This data was collected at the Georgia Coastal Ecosystems LTER Site on the south-central coast of Georgia, USA. Plant species and growth metrics were measured during the spring of 2000 across 8 plots. 
 
 ```{r intro}
 
 
 #Make a table of avergages and standard deviation 
-LTERSummary <- LTERPlants %>% group_by(Species_Code) %>% summarize(Biomass_Mean = mean(Plant_Biomass, na.rm=T), Biomass_StdDev = sd(Plant_Biomass, na.rm=T), ShootHeight_Mean = mean(Shoot_Height, na.rm=T), ShootHeight_StdDev = sd(Shoot_Height, na.rm=T))
+LTERSummary <- LTERPlants %>% group_by(Plot) %>% summarize(Biomass_Mean = mean(Plant_Biomass, na.rm=T), Biomass_StdDev = sd(Plant_Biomass, na.rm=T), ShootHeight_Mean = mean(Shoot_Height, na.rm=T), ShootHeight_StdDev = sd(Shoot_Height, na.rm=T))
 
 kable(LTERSummary, align='c',digits=2,caption="Table 1. Averages and Standard Deviations of Plant Biomass and Shoot Height.")
 
 ```
 
 #Methods
-###Site Description
-####text text text
+	A quadrat survey was conducted in October 2000 to measure the species and size distribution of plants in the permanent plots at 10 GCE LTER sampling sites. The permanent plots were subdivided into two nominal zones (creek and high marsh), and 8 quadrats were randomly placed within each zone. The species, shoot height, and flowering status was recorded individually for each plant present in each quadrat within the sampling area at the mapped latitude and longitude coordinates below. 
 #
 ```{r, fig.cap= 'Figure 1. Shows a map of the study area in Georgia, USA.'}
 
@@ -62,16 +61,16 @@ georgiamap
 
 
 ```
-###Data Collection
-####text text text
-#
+
 #Results
-####text text text
+The following figure, a boxplot series of Shoot Heights across all 10 monitoring plots shows several uniquely productive plots, # 7-9. These plots may contain plant communities or phenotypes within common species that compeete well for vertical space, and will likely compete best for light resources. The second figure demonstrates that plot 7 is also uniquely prolific in biomass production. In this setting we would expect light access through height compeitition to result in higher biomass assimilation in plot 7. 
 ```{r, fig.cap= 'Figure 2. Shows Shoot Height across the 8 different sample plots.'}
 
 SHplot <- ggplot(LTERPlants, aes(group=Site, x=Plot, y=Shoot_Height)) + geom_boxplot() + ggtitle("Boxplot of Shoot Height by Plot #") + theme_bw() + scale_x_discrete(name = "Unique Monitoring Plots") + scale_y_continuous(name = "Shoot Height (cm)")
 SHplot
 
+BMplot <- ggplot(LTERPlants, aes(group=Site, x=Plot, y=Plant_Biomass)) + geom_boxplot() + ggtitle("Boxplot of Plant Biomass by Plot #") + theme_bw() + scale_x_discrete(name = "Unique Monitoring Plots") + scale_y_continuous(name = "Plant Biomass (g)")
+BMplot
 #Shoot Height (cm) 
 #Unique Monitoring Plots (1-8)
 
